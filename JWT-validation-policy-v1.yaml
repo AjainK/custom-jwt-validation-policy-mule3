@@ -1,0 +1,158 @@
+--- 
+category: Security
+configuration: 
+  - 
+    description: "Specifies the expected audience in the JWT."
+    name: "Audience"
+    propertyName: audience
+    sensitive: false
+    type: string
+    defaultValue: "null.muleosft.com"
+    allowMultiple: false
+    optional: true
+  - 
+    description: "Specifies the expected scopes."
+    name: "Scopes"
+    propertyName: scope
+    sensitive: false
+    type: string
+    defaultValue: "null"
+    allowMultiple: true
+    optional: true
+  - 
+    description: "Specifies the issuer of JWT."
+    name: "Issuer"
+    propertyName: issuer
+    sensitive: false
+    type: string
+    defaultValue: 
+  - 
+    description: "Specifies if ClientId validation is required."
+    name: "ClientIdValidation"
+    propertyName: client_id
+    sensitive: false
+    type: string
+    defaultValue: Yes
+  - 
+    description: "Specifies the public key of the JWT or set to null to use JWKS service"
+    name: "Secret"
+    propertyName: secret
+    sensitive: false
+    type: string
+    defaultValue: "null"
+    allowMultiple: false
+    optional: true
+  - 
+    description: "Specifies the JWKS URL to obtain keys for JWT signature verification."
+    name: "JWKS host"
+    propertyName: keys_host
+    sensitive: false
+    type: string
+    defaultValue: "login.microsoftonline.com"
+  - 
+    description: "Specifies the JWKS URL to obtain keys for JWT signature verification."
+    name: "JWKS basepath"
+    propertyName: keys_base_path
+    sensitive: false
+    type: string
+    defaultValue: "common/discovery/keys"
+  - 
+    description: "Specifies the JWKS URL to obtain keys for JWT signature verification."
+    name: "JWKS port"
+    propertyName: keys_port
+    sensitive: false
+    type: string
+    defaultValue: "80"
+  - 
+    description: "Specifies the Anypoint Login host to obtain AccessToken for Platform Calls."
+    name: "Login host"
+    propertyName: login_host
+    sensitive: false
+    type: string
+    defaultValue: ""
+  - 
+    description: "Specifies the Anypoint Login path to obtain AccessToken for Platform Calls."
+    name: "Login path"
+    propertyName: login_path
+    sensitive: false
+    type: string
+    defaultValue: "accounts/login"
+  - 
+    description: "Specifies the Anypoint Login port to obtain AccessToken for Platform Calls."
+    name: "Login port"
+    propertyName: login_port
+    sensitive: false
+    type: string
+    defaultValue: "443"
+  - 
+    description: "Specifies the Anypoint Platform API host to obtain contracts under the API."
+    name: "Contract host"
+    propertyName: contract_host
+    sensitive: false
+    type: string
+    defaultValue: "anypoint.mulesoft.com"
+  - 
+    description: "Specifies the Anypoint Platform API path to obtain contracts under the API."
+    name: "Login path"
+    propertyName: contract_path
+    sensitive: false
+    type: string
+    defaultValue: ""
+  - 
+    description: "Specifies the Anypoint Platform API port to obtain contracts under the API."
+    name: "Login port"
+    propertyName: contract_port
+    sensitive: false
+    type: string
+    defaultValue: "443"
+  - 
+    description: "how many keys to cache?"
+    name: "Cache Entries"
+    propertyName: cache_entries
+    sensitive: false
+    type: string
+    defaultValue: "100"
+  - 
+    description: "When should the cache entries expire?"
+    name: "cache TTL"
+    propertyName: cache_ttl
+    sensitive: false
+    type: string
+    defaultValue: "300000"
+  - 
+    description: "How often should TTL be evaluated?"
+    name: "Cache Interval"
+    propertyName: cache_interval
+    sensitive: false
+    type: string
+    defaultValue: "30000"  
+description: "Validates JWT stored in header."
+id: jwt-policy
+name: "JWT policy"
+providedCharacteristics: 
+  - "OAuth 2.0 protected"
+requiredCharacteristics: []
+requiresConnectivity: false
+resourceLevelSupported: true
+standalone: true
+type: custom
+ramlV1Snippet: |
+ #%RAML 1.0 Trait
+  headers:
+    Authorization:
+      description: "Used to send a valid OAuth 2 based JWT."
+      type: string 
+  responses: 
+    401:
+      description: Unauthorised reponses
+      body: 
+        application/json:
+          examples: 
+            aud-invalid: '{ "error" : "JWT aud is invalid" }'
+            iss-invalid: '{ "error" : "JWT iss is invalid" }'
+            client_id-invalid: '{ "error" : "JWT CID is invalid" }'
+            expiry: '{ "error" : "JWT has expired" }'
+            signature-invalid: '{ "error" : "JWT has invalid signature"}'
+            missing-header: '{ "error" : " Authorization header not provided" }'
+            invalid-format: '{ "error" : "Authorization header has invalid format" }'
+    403:
